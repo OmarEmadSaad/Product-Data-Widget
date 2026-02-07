@@ -3,16 +3,22 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+
   build: {
+    outDir: "dist",
+
     lib: {
       entry: "src/widget-main.jsx",
       name: "TactfulWidget",
-      fileName: () => "widget.js",
+      fileName: () => "Widget.js",
       formats: ["iife"],
     },
+
+    cssCodeSplit: false,
+
     rollupOptions: {
       output: {
-        assetFileNames: "widget.css",
+        assetFileNames: "Widget.css",
       },
     },
   },
