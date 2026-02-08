@@ -66,7 +66,7 @@
 // ==/UserScript==
 
 (function () {
-  const WIDGET_JS = "http://localhost:5173/widget.js";
+  const WIDGET_JS = "https://product-data-widget.vercel.app/widget.js";
 
   function loadJS(url) {
     const s = document.createElement("script");
