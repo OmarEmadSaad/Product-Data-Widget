@@ -5,16 +5,13 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: "src/widget-main.jsx",
+      entry: "src/main.tsx",
       name: "TactfulWidget",
-      fileName: () => "widget.js",
-      formats: ["iife"],
+      fileName: "widget",
+      formats: ["umd"],
     },
-    cssCodeSplit: false,
     rollupOptions: {
-      output: {
-        inlineDynamicImports: true,
-      },
+      external: ["react", "react-dom"],
     },
   },
 });
