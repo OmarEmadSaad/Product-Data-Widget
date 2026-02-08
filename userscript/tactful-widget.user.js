@@ -1,87 +1,60 @@
 // ==UserScript==
 // @name         Tactful Product Collector Widget
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @description  Collect product data from Amazon & eBay
-// @author       Tactful
 // @match        https://*.amazon.*/dp/*
-// @match        https://*.amazon.*/gp/product/*
-// @match        https://*.amazon.*/gp/aw/d/*
+// @match        https://*.amazon.*/gp/*
 // @match        https://*.ebay.*/itm/*
-// @grant        GM_addStyle
+// @grant        none
 // @run-at       document-idle
 // ==/UserScript==
 
 (function () {
-  "use strict";
+  const WIDGET_JS = "https://product-data-widget.vercel.app/widget.js";
+  const WIDGET_CSS = "https://product-data-widget.vercel.app/widget.css";
 
-  const WIDGET_JS_URL = "https://product-data-widget.vercel.app/Widget.js";
-
-  const WIDGET_CSS_URL = "https://product-data-widget.vercel.app/Widget.css";
-
-  function loadResource(url, type = "script") {
+  function loadJS(url) {
     return new Promise((resolve, reject) => {
-      let element;
-
-      if (type === "css") {
-        element = document.createElement("link");
-        element.rel = "stylesheet";
-        element.href = url;
-      } else {
-        element = document.createElement("script");
-        element.src = url;
-        element.type = "module";
-      }
-
-      element.onload = () => resolve();
-      element.onerror = reject;
-
-      if (type === "css") {
-        document.head.appendChild(element);
-      } else {
-        document.body.appendChild(element);
-      }
+      const s = document.createElement("script");
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.body.appendChild(s);
     });
   }
 
-  function createWidgetContainer() {
-    const container = document.createElement("div");
-    container.id = "tactful-widget-root";
+  function loadCSS(url) {
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = url;
+    document.head.appendChild(l);
+  }
 
-    container.style.cssText = `
+  function createContainer() {
+    const div = document.createElement("div");
+    div.id = "tactful-widget-root";
+    div.style.cssText = `
       position: fixed;
       bottom: 20px;
       right: 20px;
       z-index: 999999;
       max-width: 380px;
     `;
-
-    document.body.appendChild(container);
+    document.body.appendChild(div);
   }
 
-  async function initWidget() {
-    try {
-      createWidgetContainer();
+  async function init() {
+    createContainer();
+    loadCSS(WIDGET_CSS);
+    await loadJS(WIDGET_JS);
 
-      await loadResource(WIDGET_CSS_URL, "css");
-      await loadResource(WIDGET_JS_URL, "script");
-
-      if (
-        window.TactfulWidget &&
-        typeof window.TactfulWidget.initWidget === "function"
-      ) {
-        window.TactfulWidget.initWidget("tactful-widget-root");
-      } else {
-        console.warn("Widget init not found");
-      }
-    } catch (error) {
-      console.error("Widget failed:", error);
+    if (window.TactfulWidget?.initWidget) {
+      window.TactfulWidget.initWidget("tactful-widget-root");
+    } else {
+      console.error("TactfulWidget not found on window");
     }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initWidget);
-  } else {
-    initWidget();
-  }
+  init();
 })();

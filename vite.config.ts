@@ -1,4 +1,4 @@
-// vite.config.js
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -8,12 +8,12 @@ export default defineConfig({
     lib: {
       entry: "src/widget-main.jsx",
       name: "TactfulWidget",
-      fileName: "Widget",
+      fileName: () => "widget.js",
       formats: ["iife"],
     },
     rollupOptions: {
       output: {
-        assetFileNames: "Widget.css",
+        assetFileNames: "widget.css",
       },
     },
   },
