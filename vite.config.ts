@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -11,9 +10,10 @@ export default defineConfig({
       fileName: () => "widget.js",
       formats: ["iife"],
     },
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
-        assetFileNames: "widget.css",
+        inlineDynamicImports: true,
       },
     },
   },
